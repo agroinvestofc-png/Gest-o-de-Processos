@@ -1,0 +1,1558 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📋 Gestão de Processos - Agilize Unique 💜</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        /* ===== VARIÁVEIS DE COR ROXO ===== */
+        :root {
+            --lilas-primary: #6C3CE1;
+            --lilas-secondary: #8B5CF6;
+            --lilas-light: #EDE7FF;
+            --lilas-dark: #4C1D95;
+            --lilas-soft: #A78BFA;
+            --lilas-gradient: linear-gradient(135deg, #6C3CE1 0%, #8B5CF6 100%);
+            --lilas-gradient-dark: linear-gradient(135deg, #4C1D95 0%, #6C3CE1 100%);
+            --shadow-lilas: 0 8px 32px rgba(108, 60, 225, 0.25);
+        }
+
+        * { box-sizing: border-box; }
+        body { 
+            background: #f8f6ff; 
+            font-family: 'Segoe UI', system-ui, sans-serif; 
+            margin: 0; 
+            padding: 0; 
+        }
+        
+        /* ===== LOGIN ===== */
+        .login-container { 
+            height: 100vh; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            background: var(--lilas-gradient);
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        .login-container::before {
+            content: '';
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 50%;
+            top: -100px;
+            right: -100px;
+        }
+        .login-container::after {
+            content: '';
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 50%;
+            bottom: -150px;
+            left: -150px;
+        }
+        .login-card { 
+            background: white; 
+            border-radius: 24px; 
+            padding: 45px; 
+            width: 100%; 
+            max-width: 420px; 
+            box-shadow: var(--shadow-lilas);
+            position: relative;
+            z-index: 1;
+        }
+        .login-card h3 { 
+            font-weight: 700; 
+            color: var(--lilas-dark);
+        }
+        .login-card .logo-icon {
+            font-size: 3rem;
+            color: var(--lilas-primary);
+        }
+        .login-card .subtitle {
+            color: var(--lilas-soft);
+            font-weight: 500;
+        }
+        .demo-user {
+            background: var(--lilas-light);
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 0.85rem;
+            color: var(--lilas-dark);
+        }
+        
+        /* ===== APP CONTAINER ===== */
+        .app-container { display: none; }
+        .app-container.active { display: block; }
+        
+        /* ===== NAVBAR ROXO ===== */
+        .navbar {
+            background: var(--lilas-gradient-dark) !important;
+            box-shadow: 0 4px 20px rgba(76, 29, 149, 0.3);
+            padding: 12px 0;
+        }
+        .navbar-brand {
+            font-weight: 700;
+            color: white !important;
+        }
+        .navbar-brand .brand-heart {
+            color: #FF6B9D;
+        }
+        .navbar .btn-outline-light:hover {
+            background: rgba(255,255,255,0.2);
+            border-color: white;
+        }
+        
+        /* ===== STAT CARDS ===== */
+        .stat-card { 
+            background: white; 
+            border-radius: 16px; 
+            padding: 22px; 
+            box-shadow: 0 4px 15px rgba(108, 60, 225, 0.08); 
+            text-align: center; 
+            transition: all 0.3s ease;
+            border: 1px solid rgba(108, 60, 225, 0.05);
+        }
+        .stat-card:hover { 
+            transform: translateY(-5px); 
+            box-shadow: 0 8px 30px rgba(108, 60, 225, 0.15);
+        }
+        .stat-number { 
+            font-size: 2.8rem; 
+            font-weight: 800; 
+        }
+        
+        .bg-total { 
+            background: var(--lilas-gradient);
+            color: white;
+            border: none;
+        }
+        .bg-andamento { 
+            background: linear-gradient(135deg, #F59E0B, #FBBF24);
+            color: white;
+            border: none;
+        }
+        .bg-concluido { 
+            background: linear-gradient(135deg, #10B981, #34D399);
+            color: white;
+            border: none;
+        }
+        .bg-atrasado { 
+            background: linear-gradient(135deg, #EF4444, #F87171);
+            color: white;
+            border: none;
+        }
+        
+        /* ===== FILTRO CARD ===== */
+        .filtro-card { 
+            background: white; 
+            padding: 20px; 
+            border-radius: 16px; 
+            margin-bottom: 20px; 
+            box-shadow: 0 4px 15px rgba(108, 60, 225, 0.08);
+            border: 1px solid rgba(108, 60, 225, 0.05);
+        }
+        
+        /* ===== TABELAS ===== */
+        .table-responsive { 
+            background: white; 
+            border-radius: 16px; 
+            padding: 10px; 
+            box-shadow: 0 4px 15px rgba(108, 60, 225, 0.08);
+            overflow-x: auto;
+            border: 1px solid rgba(108, 60, 225, 0.05);
+        }
+        .table thead th {
+            background: var(--lilas-gradient);
+            color: white;
+            font-weight: 600;
+            border: none;
+            padding: 12px 8px;
+        }
+        .table thead th:first-child {
+            border-radius: 8px 0 0 8px;
+        }
+        .table thead th:last-child {
+            border-radius: 0 8px 8px 0;
+        }
+        .table tbody tr:hover {
+            background: var(--lilas-light);
+        }
+        
+        .badge-priority { 
+            font-size: 0.7rem; 
+            padding: 4px 12px; 
+            border-radius: 20px;
+        }
+        .badge-priority.bg-danger { background: #EF4444 !important; }
+        .badge-priority.bg-warning { background: #F59E0B !important; color: white; }
+        .badge-priority.bg-secondary { background: #9CA3AF !important; }
+        .badge-priority.bg-success { background: #10B981 !important; }
+        
+        /* ===== GRÁFICOS ===== */
+        .chart-container { 
+            background: white; 
+            border-radius: 16px; 
+            padding: 20px; 
+            box-shadow: 0 4px 15px rgba(108, 60, 225, 0.08);
+            margin-bottom: 20px;
+            min-height: 220px;
+            border: 1px solid rgba(108, 60, 225, 0.05);
+        }
+        canvas { max-height: 250px; width: 100% !important; }
+        
+        /* ===== BOTÕES ===== */
+        .btn-primary {
+            background: var(--lilas-gradient);
+            border: none;
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(108, 60, 225, 0.35);
+            background: var(--lilas-gradient-dark);
+        }
+        .btn-outline-primary {
+            color: var(--lilas-primary);
+            border-color: var(--lilas-primary);
+        }
+        .btn-outline-primary:hover {
+            background: var(--lilas-primary);
+            color: white;
+            border-color: var(--lilas-primary);
+        }
+        .btn-success {
+            background: linear-gradient(135deg, #10B981, #34D399);
+            border: none;
+        }
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.35);
+        }
+        
+        /* ===== MODAIS ===== */
+        .modal-header.bg-primary {
+            background: var(--lilas-gradient) !important;
+            border-radius: 16px 16px 0 0;
+            padding: 20px 24px;
+        }
+        .modal-header.bg-warning {
+            background: linear-gradient(135deg, #F59E0B, #FBBF24) !important;
+            border-radius: 16px 16px 0 0;
+            padding: 20px 24px;
+        }
+        .modal-header.bg-dark {
+            background: var(--lilas-gradient-dark) !important;
+            border-radius: 16px 16px 0 0;
+            padding: 20px 24px;
+        }
+        .modal-header.bg-secondary {
+            background: var(--lilas-gradient) !important;
+            border-radius: 16px 16px 0 0;
+            padding: 20px 24px;
+        }
+        .modal-content {
+            border-radius: 16px;
+            border: none;
+            box-shadow: var(--shadow-lilas);
+        }
+        
+        /* ===== NAV TABS ===== */
+        .nav-pills .nav-link {
+            color: var(--lilas-dark);
+            font-weight: 500;
+            border-radius: 12px;
+            padding: 10px 20px;
+            transition: all 0.3s ease;
+        }
+        .nav-pills .nav-link:hover {
+            background: var(--lilas-light);
+        }
+        .nav-pills .nav-link.active {
+            background: var(--lilas-gradient);
+            color: white;
+            box-shadow: 0 4px 15px rgba(108, 60, 225, 0.3);
+        }
+        
+        /* ===== PAGINAÇÃO ===== */
+        .page-item.active .page-link {
+            background: var(--lilas-gradient);
+            border-color: var(--lilas-primary);
+        }
+        .page-link {
+            color: var(--lilas-primary);
+        }
+        .page-link:hover {
+            color: var(--lilas-dark);
+        }
+        
+        /* ===== CARDS DOS CADASTROS ===== */
+        .card-header.bg-primary {
+            background: var(--lilas-gradient) !important;
+            border-radius: 12px 12px 0 0;
+            padding: 12px 20px;
+            font-weight: 600;
+        }
+        .card-header.bg-warning {
+            background: linear-gradient(135deg, #F59E0B, #FBBF24) !important;
+            border-radius: 12px 12px 0 0;
+            padding: 12px 20px;
+            font-weight: 600;
+            color: white;
+        }
+        .card-header.bg-success {
+            background: linear-gradient(135deg, #10B981, #34D399) !important;
+            border-radius: 12px 12px 0 0;
+            padding: 12px 20px;
+            font-weight: 600;
+        }
+        .list-group-item {
+            border-color: rgba(108, 60, 225, 0.05);
+        }
+        .list-group-item:hover {
+            background: var(--lilas-light);
+        }
+        
+        /* ===== HISTÓRICO ===== */
+        .diff-old { color: #EF4444; text-decoration: line-through; margin-right: 5px; }
+        .diff-new { color: #10B981; font-weight: 600; }
+        .historico-item { 
+            border-left: 3px solid var(--lilas-primary); 
+            padding-left: 15px; 
+            margin-bottom: 8px;
+            background: var(--lilas-light);
+            padding: 8px 15px;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        /* ===== INDICADOR ONLINE ===== */
+        .online-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+        }
+        .online-indicator.online { background: #10B981; }
+        .online-indicator.offline { background: #EF4444; }
+        
+        /* ===== RESPONSIVIDADE ===== */
+        @media (max-width: 768px) {
+            .stat-number { font-size: 2rem; }
+            .filtro-card .row > div { margin-bottom: 8px; }
+            .table-responsive { font-size: 0.75rem; padding: 5px; }
+            .login-card { padding: 25px; margin: 10px; }
+            .nav-pills .nav-link { padding: 8px 12px; font-size: 0.85rem; }
+            .btn-sm { font-size: 0.7rem; padding: 0.2rem 0.4rem; }
+        }
+        @media (max-width: 576px) {
+            .stat-card { padding: 12px; }
+            .stat-number { font-size: 1.5rem; }
+            .chart-container { padding: 10px; min-height: 180px; }
+        }
+        
+        /* ===== ANIMAÇÕES ===== */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .stat-card, .chart-container, .filtro-card {
+            animation: fadeIn 0.5s ease forwards;
+        }
+        .stat-card:nth-child(2) { animation-delay: 0.1s; }
+        .stat-card:nth-child(3) { animation-delay: 0.2s; }
+        .stat-card:nth-child(4) { animation-delay: 0.3s; }
+
+        /* ===== LOADING ===== */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255,255,255,0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            display: none;
+        }
+        .loading-overlay.show { display: flex; }
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid var(--lilas-light);
+            border-top: 5px solid var(--lilas-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ===== HEART ANIMATION ===== */
+        .heart-pulse {
+            display: inline-block;
+            animation: heartPulse 1.5s ease-in-out infinite;
+        }
+        @keyframes heartPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        /* ===== DEMO BADGE ===== */
+        .demo-badge {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(108, 60, 225, 0.9);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            z-index: 999;
+            box-shadow: 0 4px 15px rgba(108, 60, 225, 0.3);
+            backdrop-filter: blur(10px);
+        }
+        .demo-badge i {
+            margin-right: 6px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div id="loadingOverlay" class="loading-overlay">
+    <div class="loading-spinner"></div>
+</div>
+
+<!-- DEMO BADGE -->
+<div class="demo-badge">
+    <i class="bi bi-database"></i> Modo Local (Teste)
+</div>
+
+<!-- LOGIN -->
+<div id="loginScreen" class="login-container">
+    <div class="login-card">
+        <div class="text-center mb-3">
+            <span class="logo-icon"><i class="bi bi-clipboard-data"></i></span>
+        </div>
+        <h3 class="text-center mb-1">Agilize Unique</h3>
+        <p class="text-center subtitle mb-3">
+            <span class="heart-pulse">💜</span> Gestão de Processos
+        </p>
+        <div class="text-center mb-3 demo-user">
+            <i class="bi bi-info-circle"></i> Demo: <strong>admin</strong> / <strong>admin123</strong>
+        </div>
+        <div id="loginAlert" class="alert alert-danger d-none">Usuário ou senha inválidos</div>
+        <form id="loginForm" onsubmit="return false;">
+            <div class="mb-3">
+                <label class="form-label fw-bold">Usuário</label>
+                <input type="text" id="loginUser" class="form-control" value="admin" placeholder="admin" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label fw-bold">Senha</label>
+                <input type="password" id="loginPass" class="form-control" value="admin123" placeholder="********" required>
+            </div>
+            <button type="button" class="btn btn-primary w-100 py-2" onclick="fazerLogin()">
+                <i class="bi bi-box-arrow-in-right me-2"></i>Entrar
+            </button>
+        </form>
+        <p class="mt-3 text-center text-muted small">
+            <a href="#" onclick="toggleRegistro()">Criar conta</a>
+            <span class="mx-2">|</span>
+            <span class="heart-pulse">💜</span>
+        </p>
+        <div id="registroDiv" style="display:none; margin-top:15px; border-top:1px solid #eee; padding-top:15px;">
+            <h6>Criar nova conta</h6>
+            <div class="mb-2">
+                <input type="text" id="regNome" class="form-control" placeholder="Nome completo">
+            </div>
+            <div class="mb-2">
+                <input type="text" id="regUser" class="form-control" placeholder="Usuário">
+            </div>
+            <div class="mb-2">
+                <input type="password" id="regSenha" class="form-control" placeholder="Senha">
+            </div>
+            <button class="btn btn-outline-primary w-100" onclick="registrarUsuario()">
+                <i class="bi bi-person-plus me-2"></i>Registrar
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- APP -->
+<div id="appScreen" class="app-container">
+    <nav class="navbar navbar-expand-lg navbar-dark shadow-sm">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <i class="bi bi-clipboard-data me-2"></i>Agilize Unique
+                <span class="brand-heart heart-pulse">💜</span>
+                <small style="font-size:0.6rem; opacity:0.7;">Local</small>
+            </a>
+            <div class="ms-auto d-flex align-items-center">
+                <span class="text-light me-2" id="userNameDisplay">Usuário</span>
+                <span class="online-indicator online me-3" title="Modo Local"></span>
+                <button class="btn btn-outline-light btn-sm" onclick="logout()">
+                    <i class="bi bi-box-arrow-right"></i> Sair
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <ul class="nav nav-pills mb-4" id="mainTabs" role="tablist">
+            <li class="nav-item">
+                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tabDashboard">
+                    <i class="bi bi-graph-up"></i> Dashboard
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tabProcessos">
+                    <i class="bi bi-list-ul"></i> Processos
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tabHistorico">
+                    <i class="bi bi-clock-history"></i> Histórico
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tabUsuarios">
+                    <i class="bi bi-people"></i> Usuários
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tabCadastros">
+                    <i class="bi bi-book"></i> Cadastros
+                </button>
+            </li>
+        </ul>
+
+        <div class="tab-content">
+            <!-- DASHBOARD -->
+            <div class="tab-pane fade show active" id="tabDashboard">
+                <div class="row g-4 mb-4" id="dashboardCards">
+                    <div class="col-md-3 col-6">
+                        <div class="stat-card bg-total">
+                            <span class="stat-number" id="dashTotal">0</span><br>
+                            <small>Total</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-6">
+                        <div class="stat-card bg-andamento">
+                            <span class="stat-number" id="dashAndamento">0</span><br>
+                            <small>Em Andamento</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-6">
+                        <div class="stat-card bg-concluido">
+                            <span class="stat-number" id="dashConcluidos">0</span><br>
+                            <small>Concluídos</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-6">
+                        <div class="stat-card bg-atrasado">
+                            <span class="stat-number" id="dashAtrasados">0</span><br>
+                            <small>Atrasados</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-4"><div class="chart-container"><canvas id="chartStatus"></canvas></div></div>
+                    <div class="col-md-4"><div class="chart-container"><canvas id="chartPrioridade"></canvas></div></div>
+                    <div class="col-md-4"><div class="chart-container"><canvas id="chartSetor"></canvas></div></div>
+                </div>
+
+                <div class="listagem-dashboard mt-4">
+                    <h5><i class="bi bi-list-ul me-2"></i>Todos os Processos</h5>
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover table-bordered align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Ticket</th>
+                                    <th>Data</th>
+                                    <th>Cliente</th>
+                                    <th>Setor</th>
+                                    <th>Prioridade</th>
+                                    <th>Assunto</th>
+                                    <th>Status</th>
+                                    <th>Responsável</th>
+                                    <th>Resp. Card</th>
+                                    <th>Data Conclusão</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabelaDashboardProcessos">
+                                <tr><td colspan="10" class="text-center text-muted">Carregando...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PROCESSOS -->
+            <div class="tab-pane fade" id="tabProcessos">
+                <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
+                    <h5>Lista de Processos <span class="badge bg-primary" id="totalRegistros">0</span></h5>
+                    <div class="btn-group">
+                        <button class="btn btn-primary btn-sm" onclick="abrirNovo()">
+                            <i class="bi bi-plus-circle"></i> Novo
+                        </button>
+                        <button class="btn btn-outline-primary btn-sm" onclick="exportarCSV()">
+                            <i class="bi bi-file-earmark-spreadsheet"></i> CSV
+                        </button>
+                        <button class="btn btn-outline-success btn-sm" onclick="exportarExcel()">
+                            <i class="bi bi-file-earmark-excel"></i> Excel
+                        </button>
+                        <button class="btn btn-outline-danger btn-sm" onclick="resetarDados()">
+                            <i class="bi bi-arrow-counterclockwise"></i> Reset
+                        </button>
+                    </div>
+                </div>
+
+                <div class="filtro-card">
+                    <div class="row g-2">
+                        <div class="col-md-2 col-6"><select id="filtroSetor" class="form-select form-select-sm"><option value="">Setor</option></select></div>
+                        <div class="col-md-2 col-6"><select id="filtroPrioridade" class="form-select form-select-sm"><option value="">Prioridade</option></select></div>
+                        <div class="col-md-2 col-6"><select id="filtroStatus" class="form-select form-select-sm"><option value="">Status</option></select></div>
+                        <div class="col-md-2 col-6"><select id="filtroResponsavel" class="form-select form-select-sm"><option value="">Responsável</option></select></div>
+                        <div class="col-md-2 col-6"><input type="text" id="filtroCliente" class="form-control form-control-sm" placeholder="Cliente"></div>
+                        <div class="col-md-2 col-6"><input type="text" id="filtroAssunto" class="form-control form-control-sm" placeholder="Assunto"></div>
+                        <div class="col-md-2 col-6"><input type="date" id="filtroDataInicio" class="form-control form-control-sm"></div>
+                        <div class="col-md-2 col-6"><input type="date" id="filtroDataFim" class="form-control form-control-sm"></div>
+                        <div class="col-md-2 col-6"><button class="btn btn-primary btn-sm w-100" onclick="aplicarFiltros()"><i class="bi bi-search"></i> Filtrar</button></div>
+                        <div class="col-md-2 col-6"><button class="btn btn-secondary btn-sm w-100" onclick="limparFiltros()"><i class="bi bi-arrow-counterclockwise"></i> Limpar</button></div>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>Ticket</th>
+                                <th>Data</th>
+                                <th>Cliente</th>
+                                <th>Setor</th>
+                                <th>Prioridade</th>
+                                <th>Assunto</th>
+                                <th>Status</th>
+                                <th>Responsável</th>
+                                <th>Resp. Card</th>
+                                <th>Data Conclusão</th>
+                                <th style="min-width:120px;">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelaProcessos"><tr><td colspan="11" class="text-center text-muted">Carregando...</td></tr></tbody>
+                    </table>
+                </div>
+                <nav><ul class="pagination justify-content-center" id="paginacao"></ul></nav>
+            </div>
+
+            <!-- HISTÓRICO -->
+            <div class="tab-pane fade" id="tabHistorico">
+                <h5>Histórico de Alterações</h5>
+                <div class="table-responsive">
+                    <table class="table table-sm table-bordered">
+                        <thead class="table-secondary">
+                            <tr><th>Data/Hora</th><th>Usuário</th><th>Ticket</th><th>Cliente</th><th>Ação</th><th>Detalhes</th></tr>
+                        </thead>
+                        <tbody id="tabelaHistorico"><tr><td colspan="6" class="text-center">Carregando...</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- USUÁRIOS -->
+            <div class="tab-pane fade" id="tabUsuarios">
+                <div class="d-flex justify-content-between mb-3 flex-wrap">
+                    <h5>Gerenciar Usuários</h5>
+                    <button class="btn btn-primary btn-sm" onclick="abrirFormUsuario()">
+                        <i class="bi bi-plus-circle"></i> Novo
+                    </button>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead><tr><th>Nome</th><th>Usuário</th><th>Admin</th><th>Ações</th></tr></thead>
+                        <tbody id="tabelaUsuarios"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- CADASTROS -->
+            <div class="tab-pane fade" id="tabCadastros">
+                <h5>Cadastros Base</h5>
+                <div class="row mt-3">
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-header bg-primary text-white">Setores</div>
+                            <ul class="list-group list-group-flush" id="listaSetores"></ul>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-header bg-warning">Prioridades</div>
+                            <ul class="list-group list-group-flush" id="listaPrioridades"></ul>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-header bg-success text-white">Status</div>
+                            <ul class="list-group list-group-flush" id="listaStatus"></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAIS -->
+<!-- Formulário Processo -->
+<div class="modal fade" id="formModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 id="formTitle">Novo Processo</h5>
+                <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="processForm">
+                    <input type="hidden" id="formId">
+                    <div class="row">
+                        <div class="col-md-4 mb-2"><label class="form-label">Ticket</label><input type="text" id="fTicket" class="form-control"></div>
+                        <div class="col-md-4 mb-2"><label class="form-label">Data</label><input type="date" id="fData" class="form-control"></div>
+                        <div class="col-md-4 mb-2"><label class="form-label">Cliente</label><input type="text" id="fCliente" class="form-control"></div>
+                        <div class="col-md-4 mb-2"><label class="form-label">Setor</label><select id="fSetor" class="form-select"><option value="">Selecione</option></select></div>
+                        <div class="col-md-4 mb-2"><label class="form-label">Prioridade</label><select id="fPrioridade" class="form-select"><option value="">Selecione</option></select></div>
+                        <div class="col-md-4 mb-2"><label class="form-label">Status</label><select id="fStatus" class="form-select"><option value="">Selecione</option></select></div>
+                        <div class="col-md-6 mb-2"><label class="form-label">Assunto</label><input type="text" id="fAssunto" class="form-control"></div>
+                        <div class="col-md-6 mb-2"><label class="form-label">Serviço</label><input type="text" id="fServico" class="form-control"></div>
+                        <div class="col-md-4 mb-2"><label class="form-label">Thread</label><input type="text" id="fThread" class="form-control"></div>
+                        <div class="col-md-4 mb-2"><label class="form-label">CARD</label><input type="text" id="fCard" class="form-control"></div>
+                        <div class="col-md-4 mb-2"><label class="form-label">Prazo</label><input type="date" id="fPrazo" class="form-control"></div>
+                        <div class="col-md-4 mb-2"><label class="form-label">Data Conclusão</label><input type="date" id="fDataConclusao" class="form-control"></div>
+                        <div class="col-md-4 mb-2"><label class="form-label">Último Acomp.</label><input type="date" id="fUltimoAcomp" class="form-control"></div>
+                        <div class="col-md-4 mb-2"><label class="form-label">Responsável (Gerente)</label><select id="fResponsavel" class="form-select"><option value="">Selecione</option></select></div>
+                        <div class="col-md-4 mb-2"><label class="form-label">Responsável pelo Card</label><select id="fResponsavelCard" class="form-select"><option value="">Selecione</option></select></div>
+                        <div class="col-12 mb-2"><label class="form-label">Observações</label><textarea id="fObservacoes" rows="2" class="form-control"></textarea></div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="salvarProcesso()"><i class="bi bi-check2"></i> Salvar</button>
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Detalhe Processo -->
+<div class="modal fade" id="detalheModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-dark text-white">
+                <h5><i class="bi bi-eye me-2"></i>Detalhes do Processo</h5>
+                <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="detalheBody"></div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="editarDoModal()"><i class="bi bi-pencil"></i> Editar</button>
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Usuário -->
+<div class="modal fade" id="userModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-secondary text-white">
+                <h5 id="userFormTitle">Novo Usuário</h5>
+                <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="userId">
+                <div class="mb-2"><label class="form-label">Nome Completo</label><input type="text" id="uNome" class="form-control"></div>
+                <div class="mb-2"><label class="form-label">Usuário</label><input type="text" id="uUsername" class="form-control"></div>
+                <div class="mb-2"><label class="form-label">Senha</label><input type="password" id="uPassword" class="form-control" placeholder="Deixe em branco para manter"></div>
+                <div class="mb-2"><input type="checkbox" id="uAdmin"> Administrador</div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="salvarUsuario()">Salvar</button>
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// ================================================================
+// SISTEMA DE ARMAZENAMENTO LOCAL
+// ================================================================
+const STORAGE = {
+    USERS: 'agilize_users',
+    SESSION: 'agilize_session',
+    PROCESSOS: 'agilize_processos',
+    HISTORICO: 'agilize_historico',
+    CADASTROS: 'agilize_cadastros'
+};
+
+const DEFAULT_CADASTROS = {
+    setores: ['DP', 'Nex', 'Balanço', 'Leg', 'Soc', 'Aud', 'Unique', 'Bug', 'Conciliação'],
+    prioridades: ['Urgente', 'Alta', 'Média', 'Baixa'],
+    statuses: ['Recebido', 'Encaminhado ao setor', 'Em execução', 'Aguardando Cliente',
+               'Aguardando Órgão Público', 'Aguardando Outro Setor', 'Concluído', 'Cancelado'],
+    responsaveis: ['Jonas', 'Natália', 'Lucas', 'Emanuelle', 'Lúcio', 'Gil', 'Keilla', 'Renata Cachoeira'],
+    responsaveisCard: ['Jonas', 'Lúcio', 'Lucas', 'Natália', 'Emanuelle']
+};
+
+const DADOS_INICIAIS = [
+    { id: 1, ticket: 'T-001', data: '2026-01-01', cliente: 'Empresa Alpha', setor: 'DP', prioridade: 'Urgente', assunto: 'Recalculo de impostos', servico: 'Contábil', thread: '#123', card: 'C-01', prazo: '2026-02-10', status: 'Aguardando Cliente', data_conclusao: '', ultimo_acompanhamento: '2026-01-20', observacoes: 'Aguardando documentação fiscal.', responsavel_id: 'Jonas', responsavel_card: 'Lucas' },
+    { id: 2, ticket: 'T-789', data: '2026-02-01', cliente: 'Beta Solutions', setor: 'Nex', prioridade: 'Alta', assunto: 'Integração API', servico: 'TI', thread: '#456', card: 'C-02', prazo: '2026-03-01', status: 'Em execução', data_conclusao: '', ultimo_acompanhamento: '2026-02-20', observacoes: 'Desenvolvimento em andamento.', responsavel_id: 'Natália', responsavel_card: 'Jonas' },
+    { id: 3, ticket: 'T-101', data: '2026-03-10', cliente: 'Gamma Corp', setor: 'Balanço', prioridade: 'Média', assunto: 'Auditoria anual', servico: 'Financeiro', thread: '#789', card: 'C-03', prazo: '2026-04-15', status: 'Concluído', data_conclusao: '2026-04-10', ultimo_acompanhamento: '2026-04-05', observacoes: 'Arquivos entregues.', responsavel_id: 'Lucas', responsavel_card: 'Natália' }
+];
+
+// Cache em memória
+let cache = {
+    cadastros: null,
+    processos: null,
+    usuarios: null,
+    historico: null
+};
+
+let currentUser = null;
+let currentPage = 1;
+let currentDetailId = null;
+let chartStatus, chartPrioridade, chartSetor;
+let listaProcessosAtuais = [];
+
+// ================================================================
+// FUNÇÕES DE ARMAZENAMENTO
+// ================================================================
+function initStorage() {
+    if (!localStorage.getItem(STORAGE.USERS)) {
+        localStorage.setItem(STORAGE.USERS, JSON.stringify([
+            { id: 1, username: 'admin', password: 'admin123', nome: 'Administrador', isAdmin: true }
+        ]));
+    }
+    if (!localStorage.getItem(STORAGE.CADASTROS)) {
+        localStorage.setItem(STORAGE.CADASTROS, JSON.stringify(DEFAULT_CADASTROS));
+    }
+    if (!localStorage.getItem(STORAGE.PROCESSOS)) {
+        localStorage.setItem(STORAGE.PROCESSOS, JSON.stringify(DADOS_INICIAIS));
+    }
+    if (!localStorage.getItem(STORAGE.HISTORICO)) {
+        localStorage.setItem(STORAGE.HISTORICO, JSON.stringify([]));
+    }
+}
+
+function getCadastros() {
+    if (!cache.cadastros) {
+        const raw = localStorage.getItem(STORAGE.CADASTROS);
+        cache.cadastros = raw ? JSON.parse(raw) : JSON.parse(JSON.stringify(DEFAULT_CADASTROS));
+    }
+    return cache.cadastros;
+}
+
+function getProcessos() {
+    if (!cache.processos) {
+        const raw = localStorage.getItem(STORAGE.PROCESSOS);
+        cache.processos = raw ? JSON.parse(raw) : [];
+    }
+    return cache.processos;
+}
+
+function getUsuarios() {
+    if (!cache.usuarios) {
+        const raw = localStorage.getItem(STORAGE.USERS);
+        cache.usuarios = raw ? JSON.parse(raw) : [];
+    }
+    return cache.usuarios;
+}
+
+function getHistorico() {
+    if (!cache.historico) {
+        const raw = localStorage.getItem(STORAGE.HISTORICO);
+        cache.historico = raw ? JSON.parse(raw) : [];
+    }
+    return cache.historico;
+}
+
+function setProcessos(lista) {
+    cache.processos = lista;
+    localStorage.setItem(STORAGE.PROCESSOS, JSON.stringify(lista));
+}
+
+function setHistorico(lista) {
+    cache.historico = lista;
+    localStorage.setItem(STORAGE.HISTORICO, JSON.stringify(lista));
+}
+
+function setUsuarios(lista) {
+    cache.usuarios = lista;
+    localStorage.setItem(STORAGE.USERS, JSON.stringify(lista));
+}
+
+function invalidateCache() {
+    cache.cadastros = null;
+    cache.processos = null;
+    cache.usuarios = null;
+    cache.historico = null;
+}
+
+// ================================================================
+// LOGIN
+// ================================================================
+function fazerLogin() {
+    const username = document.getElementById('loginUser').value.trim();
+    const password = document.getElementById('loginPass').value.trim();
+    const user = getUsuarios().find(u => u.username === username && u.password === password);
+    
+    if (user) {
+        currentUser = user;
+        localStorage.setItem(STORAGE.SESSION, JSON.stringify({ 
+            userId: user.id, 
+            username: user.username, 
+            nome: user.nome, 
+            isAdmin: user.isAdmin 
+        }));
+        showApp();
+    } else {
+        document.getElementById('loginAlert').classList.remove('d-none');
+        setTimeout(() => {
+            document.getElementById('loginAlert').classList.add('d-none');
+        }, 3000);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('loginPass').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') fazerLogin();
+    });
+    document.getElementById('loginUser').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') fazerLogin();
+    });
+});
+
+function showApp() {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('appScreen').classList.add('active');
+    document.getElementById('userNameDisplay').textContent = currentUser.nome || currentUser.username;
+    carregarTudo();
+}
+
+function logout() {
+    localStorage.removeItem(STORAGE.SESSION);
+    currentUser = null;
+    document.getElementById('appScreen').classList.remove('active');
+    document.getElementById('loginScreen').style.display = 'flex';
+    document.getElementById('loginAlert').classList.add('d-none');
+}
+
+function toggleRegistro() {
+    const div = document.getElementById('registroDiv');
+    div.style.display = div.style.display === 'none' ? 'block' : 'none';
+}
+
+function registrarUsuario() {
+    const nome = document.getElementById('regNome').value.trim();
+    const username = document.getElementById('regUser').value.trim();
+    const senha = document.getElementById('regSenha').value.trim();
+    
+    if (!nome || !username || !senha) {
+        mostrarAlerta('Preencha todos os campos');
+        return;
+    }
+    
+    const users = getUsuarios();
+    if (users.find(u => u.username === username)) {
+        mostrarAlerta('Usuário já existe');
+        return;
+    }
+    
+    const newId = users.length > 0 ? Math.max(...users.map(u => u.id)) + 1 : 1;
+    users.push({ id: newId, username, password: senha, nome, isAdmin: false });
+    setUsuarios(users);
+    
+    document.getElementById('registroDiv').style.display = 'none';
+    mostrarAlerta('Conta criada com sucesso! Faça login.', 'success');
+    document.getElementById('loginUser').value = username;
+    document.getElementById('loginPass').value = senha;
+}
+
+function mostrarAlerta(msg, tipo = 'danger') {
+    const alert = document.getElementById('loginAlert');
+    alert.textContent = msg;
+    alert.className = 'alert alert-' + tipo;
+    alert.classList.remove('d-none');
+    setTimeout(() => alert.classList.add('d-none'), 5000);
+}
+
+function mostrarLoading(show) {
+    document.getElementById('loadingOverlay').className = 'loading-overlay' + (show ? ' show' : '');
+}
+
+// ================================================================
+// FUNÇÕES PRINCIPAIS
+// ================================================================
+function carregarTudo() {
+    invalidateCache();
+    carregarCadastros();
+    carregarDashboard();
+    carregarHistorico();
+    carregarProcessos(1);
+    carregarUsuarios();
+    carregarListagemDashboard();
+}
+
+function carregarCadastros() {
+    const cad = getCadastros();
+    
+    const filtros = {
+        filtroSetor: cad.setores || [],
+        filtroPrioridade: cad.prioridades || [],
+        filtroStatus: cad.statuses || [],
+        filtroResponsavel: cad.responsaveis || []
+    };
+    for (const [id, lista] of Object.entries(filtros)) {
+        const el = document.getElementById(id);
+        if (!el) continue;
+        let html = `<option value="">${id.replace('filtro', '')}</option>`;
+        lista.forEach(item => {
+            html += `<option value="${item}">${item}</option>`;
+        });
+        el.innerHTML = html;
+    }
+
+    const formIds = {
+        fSetor: cad.setores || [],
+        fPrioridade: cad.prioridades || [],
+        fStatus: cad.statuses || [],
+        fResponsavel: cad.responsaveis || [],
+        fResponsavelCard: cad.responsaveisCard || ['Jonas', 'Lúcio', 'Lucas', 'Natália', 'Emanuelle']
+    };
+    for (const [id, lista] of Object.entries(formIds)) {
+        const el = document.getElementById(id);
+        if (!el) continue;
+        let html = `<option value="">Selecione</option>`;
+        lista.forEach(item => {
+            html += `<option value="${item}">${item}</option>`;
+        });
+        el.innerHTML = html;
+    }
+
+    document.getElementById('listaSetores').innerHTML = cad.setores.map(s => `<li class="list-group-item">${s}</li>`).join('');
+    document.getElementById('listaPrioridades').innerHTML = cad.prioridades.map(s => `<li class="list-group-item">${s}</li>`).join('');
+    document.getElementById('listaStatus').innerHTML = cad.statuses.map(s => `<li class="list-group-item">${s}</li>`).join('');
+}
+
+function carregarDashboard() {
+    const processos = getProcessos();
+    const total = processos.length;
+    const andamento = processos.filter(p => p.status !== 'Concluído' && p.status !== 'Cancelado').length;
+    const concluidos = processos.filter(p => p.status === 'Concluído').length;
+    const hoje = new Date().toISOString().slice(0,10);
+    const atrasados = processos.filter(p => p.prazo && p.prazo < hoje && p.status !== 'Concluído' && p.status !== 'Cancelado').length;
+
+    document.getElementById('dashTotal').textContent = total;
+    document.getElementById('dashAndamento').textContent = andamento;
+    document.getElementById('dashConcluidos').textContent = concluidos;
+    document.getElementById('dashAtrasados').textContent = atrasados;
+
+    setTimeout(() => criarGraficos(processos), 100);
+}
+
+function criarGraficos(processos) {
+    if (chartStatus) { chartStatus.destroy(); chartStatus = null; }
+    if (chartPrioridade) { chartPrioridade.destroy(); chartPrioridade = null; }
+    if (chartSetor) { chartSetor.destroy(); chartSetor = null; }
+
+    const cores = ['#6C3CE1','#8B5CF6','#A78BFA','#C4B5FD','#EDE7FF'];
+
+    const statusMap = {};
+    processos.forEach(p => { statusMap[p.status] = (statusMap[p.status] || 0) + 1; });
+    const statusLabels = Object.keys(statusMap);
+    const statusValues = Object.values(statusMap);
+    if (statusLabels.length > 0) {
+        const ctx = document.getElementById('chartStatus').getContext('2d');
+        chartStatus = new Chart(ctx, {
+            type: 'doughnut',
+            data: { labels: statusLabels, datasets: [{ data: statusValues, backgroundColor: cores }] },
+            options: { responsive: true, plugins: { legend: { position: 'bottom' }, title: { display: true, text: 'Status' } } }
+        });
+    }
+
+    const priorMap = {};
+    processos.forEach(p => { priorMap[p.prioridade] = (priorMap[p.prioridade] || 0) + 1; });
+    const priorLabels = Object.keys(priorMap);
+    const priorValues = Object.values(priorMap);
+    if (priorLabels.length > 0) {
+        const ctx = document.getElementById('chartPrioridade').getContext('2d');
+        chartPrioridade = new Chart(ctx, {
+            type: 'bar',
+            data: { labels: priorLabels, datasets: [{ label: 'Qtd', data: priorValues, backgroundColor: ['#6C3CE1','#8B5CF6','#A78BFA','#C4B5FD'] }] },
+            options: { responsive: true, plugins: { legend: { display: false }, title: { display: true, text: 'Prioridades' } } }
+        });
+    }
+
+    const setorMap = {};
+    processos.forEach(p => { setorMap[p.setor] = (setorMap[p.setor] || 0) + 1; });
+    const setorLabels = Object.keys(setorMap);
+    const setorValues = Object.values(setorMap);
+    if (setorLabels.length > 0) {
+        const ctx = document.getElementById('chartSetor').getContext('2d');
+        chartSetor = new Chart(ctx, {
+            type: 'pie',
+            data: { labels: setorLabels, datasets: [{ data: setorValues, backgroundColor: ['#6C3CE1','#8B5CF6','#A78BFA','#C4B5FD','#EDE7FF','#DDD6FE','#7C3AED','#5B21B6','#4C1D95'] }] },
+            options: { responsive: true, plugins: { legend: { position: 'bottom' }, title: { display: true, text: 'Setores' } } }
+        });
+    }
+}
+
+function carregarListagemDashboard() {
+    const processos = getProcessos().slice(0, 20);
+    const tbody = document.getElementById('tabelaDashboardProcessos');
+    if (processos.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="10" class="text-center text-muted">Nenhum processo cadastrado.</td></tr>';
+        return;
+    }
+    let html = '';
+    const hoje = new Date().toISOString().slice(0,10);
+    processos.forEach(p => {
+        const priorClass = p.prioridade === 'Urgente' ? 'danger' : p.prioridade === 'Alta' ? 'warning' : 'secondary';
+        const dataFormat = p.data ? new Date(p.data).toLocaleDateString('pt-BR') : '';
+        const dataConclusaoFormat = p.data_conclusao ? new Date(p.data_conclusao).toLocaleDateString('pt-BR') : '';
+        const atrasado = p.prazo && p.prazo < hoje && p.status !== 'Concluído' && p.status !== 'Cancelado' ? ' ⚠️' : '';
+        html += `<tr>
+            <td>${p.ticket || ''}</td>
+            <td>${dataFormat}</td>
+            <td>${p.cliente || ''}</td>
+            <td>${p.setor || ''}</td>
+            <td><span class="badge bg-${priorClass} badge-priority">${p.prioridade || ''}</span></td>
+            <td>${p.assunto || ''}${atrasado}</td>
+            <td>${p.status || ''}</td>
+            <td>${p.responsavel_id || ''}</td>
+            <td>${p.responsavel_card || ''}</td>
+            <td>${dataConclusaoFormat}</td>
+        </tr>`;
+    });
+    tbody.innerHTML = html;
+}
+
+function carregarProcessos(page = 1) {
+    currentPage = page;
+    let lista = getProcessos();
+    const setor = document.getElementById('filtroSetor').value;
+    const prioridade = document.getElementById('filtroPrioridade').value;
+    const status = document.getElementById('filtroStatus').value;
+    const responsavel = document.getElementById('filtroResponsavel').value;
+    const cliente = document.getElementById('filtroCliente').value.toLowerCase();
+    const assunto = document.getElementById('filtroAssunto').value.toLowerCase();
+    const dataIni = document.getElementById('filtroDataInicio').value;
+    const dataFim = document.getElementById('filtroDataFim').value;
+
+    if (setor) lista = lista.filter(p => p.setor === setor);
+    if (prioridade) lista = lista.filter(p => p.prioridade === prioridade);
+    if (status) lista = lista.filter(p => p.status === status);
+    if (responsavel) lista = lista.filter(p => p.responsavel_id === responsavel);
+    if (cliente) lista = lista.filter(p => (p.cliente || '').toLowerCase().includes(cliente));
+    if (assunto) lista = lista.filter(p => (p.assunto || '').toLowerCase().includes(assunto));
+    if (dataIni) lista = lista.filter(p => p.data >= dataIni);
+    if (dataFim) lista = lista.filter(p => p.data <= dataFim);
+
+    listaProcessosAtuais = lista;
+    const total = lista.length;
+    document.getElementById('totalRegistros').textContent = total;
+    const perPage = 10;
+    const totalPages = Math.ceil(total / perPage);
+    const start = (page - 1) * perPage;
+    const paginated = lista.slice(start, start + perPage);
+
+    const tbody = document.getElementById('tabelaProcessos');
+    if (paginated.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="11" class="text-center text-muted">Nenhum processo encontrado.</td></tr>';
+    } else {
+        let html = '';
+        const hoje = new Date().toISOString().slice(0,10);
+        paginated.forEach(p => {
+            const priorClass = p.prioridade === 'Urgente' ? 'danger' : p.prioridade === 'Alta' ? 'warning' : 'secondary';
+            const dataFormat = p.data ? new Date(p.data).toLocaleDateString('pt-BR') : '';
+            const dataConclusaoFormat = p.data_conclusao ? new Date(p.data_conclusao).toLocaleDateString('pt-BR') : '';
+            const atrasado = p.prazo && p.prazo < hoje && p.status !== 'Concluído' && p.status !== 'Cancelado' ? ' ⚠️' : '';
+            html += `<tr>
+                <td>${p.ticket || ''}</td>
+                <td>${dataFormat}</td>
+                <td>${p.cliente || ''}</td>
+                <td>${p.setor || ''}</td>
+                <td><span class="badge bg-${priorClass} badge-priority">${p.prioridade || ''}</span></td>
+                <td>${p.assunto || ''}${atrasado}</td>
+                <td>${p.status || ''}</td>
+                <td>${p.responsavel_id || ''}</td>
+                <td>${p.responsavel_card || ''}</td>
+                <td>${dataConclusaoFormat}</td>
+                <td>
+                    <button class="btn btn-sm btn-outline-primary" onclick="visualizarProcesso(${p.id})"><i class="bi bi-eye"></i></button>
+                    <button class="btn btn-sm btn-outline-primary" onclick="editarProcesso(${p.id})"><i class="bi bi-pencil"></i></button>
+                    <button class="btn btn-sm btn-outline-danger" onclick="excluirProcesso(${p.id})"><i class="bi bi-trash3"></i></button>
+                </td>
+            </tr>`;
+        });
+        tbody.innerHTML = html;
+    }
+
+    const pag = document.getElementById('paginacao');
+    let pagHtml = '';
+    if (totalPages > 1) {
+        pagHtml += `<li class="page-item ${page === 1 ? 'disabled' : ''}"><a class="page-link" href="#" onclick="carregarProcessos(${page-1});return false;">Anterior</a></li>`;
+        for (let i = 1; i <= totalPages; i++) {
+            pagHtml += `<li class="page-item ${i === page ? 'active' : ''}"><a class="page-link" href="#" onclick="carregarProcessos(${i});return false;">${i}</a></li>`;
+        }
+        pagHtml += `<li class="page-item ${page === totalPages ? 'disabled' : ''}"><a class="page-link" href="#" onclick="carregarProcessos(${page+1});return false;">Próximo</a></li>`;
+    }
+    pag.innerHTML = pagHtml;
+}
+
+function carregarHistorico() {
+    const hist = getHistorico();
+    const tbody = document.getElementById('tabelaHistorico');
+    if (hist.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="text-center">Nenhum registro</td></tr>';
+        return;
+    }
+    const users = getUsuarios();
+    let html = '';
+    hist.slice(0, 50).forEach(h => {
+        const dt = new Date(h.alterado_em).toLocaleString('pt-BR');
+        const usuario = users.find(u => u.id === h.usuario_id);
+        const nome = usuario ? usuario.nome : 'Sistema';
+        let detalhes = '';
+        if (h.acao === 'edit' && h.alteracoes) {
+            detalhes = Object.keys(h.alteracoes).map(k => `${k}: <span class="diff-old">${h.alteracoes[k].old}</span> → <span class="diff-new">${h.alteracoes[k].new}</span>`).join('; ');
+        } else if (h.acao === 'delete') detalhes = '🗑️ Excluído';
+        else if (h.acao === 'create') detalhes = '➕ Criado';
+        html += `<tr><td>${dt}</td><td>${nome}</td><td>${h.ticket || ''}</td><td>${h.cliente || ''}</td><td><span class="badge bg-${h.acao === 'edit' ? 'warning' : h.acao === 'delete' ? 'danger' : 'success'}">${h.acao}</span></td><td>${detalhes}</td></tr>`;
+    });
+    tbody.innerHTML = html;
+}
+
+function carregarUsuarios() {
+    const users = getUsuarios();
+    const tbody = document.getElementById('tabelaUsuarios');
+    tbody.innerHTML = users.map(u => `
+        <tr>
+            <td>${u.nome || u.username}</td>
+            <td>${u.username}</td>
+            <td>${u.isAdmin ? '✅' : ''}</td>
+            <td>
+                <button class="btn btn-sm btn-outline-primary" onclick="editarUsuario(${u.id})"><i class="bi bi-pencil"></i></button>
+                <button class="btn btn-sm btn-outline-danger" onclick="excluirUsuario(${u.id})"><i class="bi bi-trash"></i></button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+// ================================================================
+// CRUD DE PROCESSOS
+// ================================================================
+function abrirNovo() {
+    carregarCadastros();
+    document.getElementById('formTitle').textContent = 'Novo Processo';
+    document.getElementById('formId').value = '';
+    document.getElementById('processForm').reset();
+    document.getElementById('formModal').querySelector('.modal-header').className = 'modal-header bg-primary text-white';
+    new bootstrap.Modal(document.getElementById('formModal')).show();
+}
+
+function editarProcesso(id) {
+    const p = getProcessos().find(pr => pr.id === id);
+    if (!p) return;
+    carregarCadastros();
+    document.getElementById('formTitle').textContent = 'Editar Processo #' + id;
+    document.getElementById('formId').value = id;
+    document.getElementById('fTicket').value = p.ticket || '';
+    document.getElementById('fData').value = p.data || '';
+    document.getElementById('fCliente').value = p.cliente || '';
+    document.getElementById('fSetor').value = p.setor || '';
+    document.getElementById('fPrioridade').value = p.prioridade || '';
+    document.getElementById('fStatus').value = p.status || '';
+    document.getElementById('fAssunto').value = p.assunto || '';
+    document.getElementById('fServico').value = p.servico || '';
+    document.getElementById('fThread').value = p.thread || '';
+    document.getElementById('fCard').value = p.card || '';
+    document.getElementById('fPrazo').value = p.prazo || '';
+    document.getElementById('fDataConclusao').value = p.data_conclusao || '';
+    document.getElementById('fUltimoAcomp').value = p.ultimo_acompanhamento || '';
+    document.getElementById('fObservacoes').value = p.observacoes || '';
+    document.getElementById('fResponsavel').value = p.responsavel_id || '';
+    document.getElementById('fResponsavelCard').value = p.responsavel_card || '';
+    document.getElementById('formModal').querySelector('.modal-header').className = 'modal-header bg-warning text-dark';
+    new bootstrap.Modal(document.getElementById('formModal')).show();
+}
+
+function salvarProcesso() {
+    const id = document.getElementById('formId').value;
+    const obj = {
+        ticket: document.getElementById('fTicket').value || 'T-' + String(Math.floor(Math.random() * 1000)).padStart(3, '0'),
+        data: document.getElementById('fData').value || new Date().toISOString().slice(0,10),
+        cliente: document.getElementById('fCliente').value || 'Cliente ' + Math.floor(Math.random() * 100),
+        setor: document.getElementById('fSetor').value || 'DP',
+        prioridade: document.getElementById('fPrioridade').value || 'Média',
+        status: document.getElementById('fStatus').value || 'Recebido',
+        assunto: document.getElementById('fAssunto').value || 'Assunto geral',
+        servico: document.getElementById('fServico').value || '',
+        thread: document.getElementById('fThread').value || '',
+        card: document.getElementById('fCard').value || '',
+        prazo: document.getElementById('fPrazo').value || '',
+        data_conclusao: document.getElementById('fDataConclusao').value || '',
+        ultimo_acompanhamento: document.getElementById('fUltimoAcomp').value || '',
+        observacoes: document.getElementById('fObservacoes').value || '',
+        responsavel_id: document.getElementById('fResponsavel').value || '',
+        responsavel_card: document.getElementById('fResponsavelCard').value || ''
+    };
+
+    let processos = getProcessos();
+    let historico = getHistorico();
+
+    if (id) {
+        const index = processos.findIndex(p => p.id == id);
+        if (index !== -1) {
+            const old = processos[index];
+            const diff = {};
+            Object.keys(obj).forEach(k => {
+                if (String(old[k] || '') !== String(obj[k] || '')) {
+                    diff[k] = { old: old[k] || '', new: obj[k] || '' };
+                }
+            });
+            if (Object.keys(diff).length > 0) {
+                historico.push({
+                    processo_id: id, ticket: obj.ticket, cliente: obj.cliente, setor: obj.setor,
+                    status: obj.status, assunto: obj.assunto,
+                    alterado_em: new Date().toISOString(), acao: 'edit', usuario_id: currentUser.id, alteracoes: diff
+                });
+            }
+            processos[index] = { ...obj, id: parseInt(id) };
+        }
+    } else {
+        const newId = processos.length > 0 ? Math.max(...processos.map(p => p.id)) + 1 : 1;
+        obj.id = newId;
+        processos.push(obj);
+        historico.push({
+            processo_id: newId, ticket: obj.ticket, cliente: obj.cliente, setor: obj.setor,
+            status: obj.status, assunto: obj.assunto,
+            alterado_em: new Date().toISOString(), acao: 'create', usuario_id: currentUser.id, alteracoes: null
+        });
+    }
+    setProcessos(processos);
+    setHistorico(historico);
+    bootstrap.Modal.getInstance(document.getElementById('formModal')).hide();
+    carregarTudo();
+}
+
+function visualizarProcesso(id) {
+    const p = getProcessos().find(pr => pr.id === id);
+    if (!p) return;
+    currentDetailId = id;
+
+    const dataFormat = (d) => d ? new Date(d).toLocaleDateString('pt-BR') : '—';
+    const tempoHtml = p.data ? (() => {
+        const diff = new Date() - new Date(p.data);
+        const dias = Math.floor(diff / 86400000);
+        return `<span class="badge bg-info">${dias} dias</span>`;
+    })() : '—';
+
+    const hist = getHistorico().filter(h => h.processo_id === id).slice(0, 10);
+    let histHtml = hist.length ? hist.map(h => {
+        const usuario = getUsuarios().find(u => u.id === h.usuario_id);
+        return `<div class="historico-item"><small>${new Date(h.alterado_em).toLocaleString('pt-BR')} - ${usuario ? usuario.nome : 'Sistema'}: <span class="badge bg-${h.acao === 'edit' ? 'warning' : 'danger'}">${h.acao}</span></small></div>`;
+    }).join('') : '<p class="text-muted">Sem alterações.</p>';
+
+    document.getElementById('detalheBody').innerHTML = `
+        <div class="row">
+            <div class="col-md-6"><b>Ticket:</b> ${p.ticket || '—'}</div>
+            <div class="col-md-6"><b>Data:</b> ${dataFormat(p.data)}</div>
+            <div class="col-md-6"><b>Cliente:</b> ${p.cliente || '—'}</div>
+            <div class="col-md-6"><b>Setor:</b> ${p.setor || '—'}</div>
+            <div class="col-md-6"><b>Prioridade:</b> <span class="badge bg-${p.prioridade === 'Urgente' ? 'danger' : 'warning'}">${p.prioridade || '—'}</span></div>
+            <div class="col-md-6"><b>Status:</b> ${p.status || '—'}</div>
+            <div class="col-md-6"><b>Responsável (Gerente):</b> ${p.responsavel_id || '—'}</div>
+            <div class="col-md-6"><b>Responsável pelo Card:</b> ${p.responsavel_card || '—'}</div>
+            <div class="col-md-6"><b>Prazo:</b> ${dataFormat(p.prazo)} ${p.prazo && p.prazo < new Date().toISOString().slice(0,10) && p.status !== 'Concluído' && p.status !== 'Cancelado' ? '⚠️ ATRASADO' : ''}</div>
+            <div class="col-md-6"><b>Data Conclusão:</b> ${dataFormat(p.data_conclusao)}</div>
+            <div class="col-md-6"><b>Últ. Acomp:</b> ${dataFormat(p.ultimo_acompanhamento)}</div>
+            <div class="col-12"><b>Assunto:</b> ${p.assunto || '—'}</div>
+            <div class="col-12"><b>Serviço:</b> ${p.servico || '—'}</div>
+            <div class="col-12"><b>Thread:</b> ${p.thread || '—'} | <b>CARD:</b> ${p.card || '—'}</div>
+            <div class="col-12"><b>Observações:</b> ${p.observacoes || '—'}</div>
+            <div class="col-12 mt-2"><b>Tempo decorrido:</b> ${tempoHtml}</div>
+            <div class="col-12 mt-3"><b>Histórico:</b> ${histHtml}</div>
+        </div>
+    `;
+    new bootstrap.Modal(document.getElementById('detalheModal')).show();
+}
+
+function editarDoModal() {
+    if (currentDetailId) {
+        bootstrap.Modal.getInstance(document.getElementById('detalheModal')).hide();
+        editarProcesso(currentDetailId);
+    }
+}
+
+function excluirProcesso(id) {
+    if (!confirm('Excluir processo #' + id + '?')) return;
+    let processos = getProcessos();
+    let historico = getHistorico();
+    const index = processos.findIndex(p => p.id === id);
+    if (index !== -1) {
+        const p = processos[index];
+        historico.push({
+            processo_id: id, ticket: p.ticket, cliente: p.cliente, setor: p.setor,
+            status: p.status, assunto: p.assunto,
+            alterado_em: new Date().toISOString(), acao: 'delete', usuario_id: currentUser.id, alteracoes: null
+        });
+        processos.splice(index, 1);
+        setProcessos(processos);
+        setHistorico(historico);
+        carregarTudo();
+    }
+}
+
+// ================================================================
+// USUÁRIOS
+// ================================================================
+function abrirFormUsuario(data = null) {
+    document.getElementById('userId').value = data ? data.id : '';
+    document.getElementById('uNome').value = data ? data.nome || '' : '';
+    document.getElementById('uUsername').value = data ? data.username : '';
+    document.getElementById('uAdmin').checked = data ? data.isAdmin : false;
+    document.getElementById('uPassword').value = '';
+    document.getElementById('userFormTitle').textContent = data ? 'Editar Usuário' : 'Novo Usuário';
+    new bootstrap.Modal(document.getElementById('userModal')).show();
+}
+
+function salvarUsuario() {
+    const id = document.getElementById('userId').value;
+    const users = getUsuarios();
+    const obj = {
+        nome: document.getElementById('uNome').value,
+        username: document.getElementById('uUsername').value,
+        isAdmin: document.getElementById('uAdmin').checked,
+        password: document.getElementById('uPassword').value
+    };
+    if (id) {
+        const index = users.findIndex(u => u.id == id);
+        if (index !== -1) {
+            users[index].nome = obj.nome || users[index].nome;
+            users[index].username = obj.username || users[index].username;
+            users[index].isAdmin = obj.isAdmin;
+            if (obj.password) users[index].password = obj.password;
+            if (users[index].id === currentUser.id) {
+                currentUser.nome = users[index].nome;
+                currentUser.isAdmin = users[index].isAdmin;
+                document.getElementById('userNameDisplay').textContent = currentUser.nome;
+            }
+        }
+    } else {
+        if (!obj.username || !obj.password) {
+            alert('Preencha usuário e senha');
+            return;
+        }
+        if (users.find(u => u.username === obj.username)) {
+            alert('Usuário já existe');
+            return;
+        }
+        const newId = users.length > 0 ? Math.max(...users.map(u => u.id)) + 1 : 1;
+        users.push({ id: newId, ...obj });
+    }
+    setUsuarios(users);
+    bootstrap.Modal.getInstance(document.getElementById('userModal')).hide();
+    carregarUsuarios();
+}
+
+function editarUsuario(id) {
+    const user = getUsuarios().find(u => u.id === id);
+    if (user) abrirFormUsuario(user);
+}
+
+function excluirUsuario(id) {
+    if (!confirm('Excluir usuário?')) return;
+    if (id === currentUser.id) { alert('Você não pode excluir a si mesmo.'); return; }
+    let users = getUsuarios().filter(u => u.id !== id);
+    setUsuarios(users);
+    carregarUsuarios();
+}
+
+// ================================================================
+// FILTROS E EXPORTAÇÃO
+// ================================================================
+function aplicarFiltros() { carregarProcessos(1); }
+
+function limparFiltros() {
+    document.querySelectorAll('.filtro-card input, .filtro-card select').forEach(el => el.value = '');
+    carregarProcessos(1);
+}
+
+function exportarCSV() {
+    const processos = listaProcessosAtuais.length > 0 ? listaProcessosAtuais : getProcessos();
+    let csv = 'Ticket,Data,Cliente,Setor,Prioridade,Assunto,Status,Responsavel,ResponsavelCard,DataConclusao\n';
+    processos.forEach(p => {
+        csv += `${p.ticket || ''},${p.data || ''},${p.cliente || ''},${p.setor || ''},${p.prioridade || ''},${p.assunto || ''},${p.status || ''},${p.responsavel_id || ''},${p.responsavel_card || ''},${p.data_conclusao || ''}\n`;
+    });
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'processos.csv';
+    link.click();
+}
+
+function exportarExcel() {
+    const processos = listaProcessosAtuais.length > 0 ? listaProcessosAtuais : getProcessos();
+    let tsv = 'Ticket\tData\tCliente\tSetor\tPrioridade\tAssunto\tStatus\tResponsavel\tResponsavelCard\tDataConclusao\n';
+    processos.forEach(p => {
+        tsv += `${p.ticket || ''}\t${p.data || ''}\t${p.cliente || ''}\t${p.setor || ''}\t${p.prioridade || ''}\t${p.assunto || ''}\t${p.status || ''}\t${p.responsavel_id || ''}\t${p.responsavel_card || ''}\t${p.data_conclusao || ''}\n`;
+    });
+    const blob = new Blob([tsv], { type: 'text/tab-separated-values;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'processos.xls';
+    link.click();
+}
+
+function resetarDados() {
+    if (!confirm('⚠️ Isso vai apagar TODOS os dados e recriar os padrões. Continuar?')) return;
+    localStorage.removeItem(STORAGE.PROCESSOS);
+    localStorage.removeItem(STORAGE.HISTORICO);
+    localStorage.removeItem(STORAGE.CADASTROS);
+    invalidateCache();
+    initStorage();
+    carregarTudo();
+    alert('✅ Dados resetados com sucesso!');
+}
+
+// ================================================================
+// INICIALIZAÇÃO
+// ================================================================
+document.addEventListener('DOMContentLoaded', function() {
+    initStorage();
+    if (localStorage.getItem(STORAGE.SESSION)) {
+        const session = JSON.parse(localStorage.getItem(STORAGE.SESSION));
+        const user = getUsuarios().find(u => u.id === session.userId);
+        if (user) {
+            currentUser = user;
+            showApp();
+        } else {
+            localStorage.removeItem(STORAGE.SESSION);
+        }
+    }
+});
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
